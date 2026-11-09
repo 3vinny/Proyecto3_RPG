@@ -1,0 +1,8 @@
+*.sh
+*.env
+*.out
+*.o
+*.run
+/.cache/**
+/static/**
+/docs_doxygen/**
