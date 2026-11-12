@@ -2,8 +2,44 @@
 #include "grafo.h"
 
 /* ==== FUNCIONES: INICIAR/DESTRUIR ==== */
-void grafo_crear(s_Grafo *grafo);
-void grafo_destruir(s_Grafo *grafo);
+void grafo_crear(s_Grafo *grafo)
+{
+    if (grafo == NULL) return;
+
+    grafo->vertices = NULL;
+    grafo->num_vertices = 0;
+    grafo->num_aristas = 0;
+}
+void grafo_destruir(s_Grafo *grafo)
+{
+    if(grafo == NULL)
+    {
+        error("Grafo inexistente");
+        return;
+    }
+
+    s_Vertice *vertice = grafo->vertices;
+
+    while(vertice != NULL) // Recorre todos los vertices hasta que sea NULL
+    {
+        s_Adyacente *adyacente = vertice->adyacentes;
+        
+        while(adyacente != NULL) // Recorre los vertices adyacentes hasta que sea NULL
+        {
+            s_Adyacente *sig_adyacente = adyacente->siguiente;
+            free(adyacente);
+            adyacente = sig_adyacente; 
+        }
+
+        s_Vertice *sig_vertice = vertice->siguiente;
+        free(vertice);
+        vertice = sig_vertice;
+    }
+
+    grafo->vertices = NULL;
+    grafo->num_vertices = 0;
+    grafo->num_aristas = 0;
+}
 
 /* ==== VERTICES ==== */
 bool grafo_agregar_vertice(s_Grafo *grafo, int id);
