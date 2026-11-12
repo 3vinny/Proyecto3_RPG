@@ -1,6 +1,4 @@
 #include "abb.h"
-
-void crear_abb(s_Abb *abb)
-{
-
-}
+#include <stdbool.h>
+#include <stdio.h>
+#include <stdlib.h>

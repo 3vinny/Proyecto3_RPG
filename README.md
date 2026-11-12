@@ -16,14 +16,17 @@ Proyecto N°3 de la asignatura Estructura de Datos, correspondiente a un juego R
 Para mantener un código uniforme entre todos los integrantes del grupo se utilizarán las siguientes convenciones:
 
 ## Funciones
-Las funciones utilizarán snake_case con palabras ----.
+Las funciones utilizarán snake_case.
 
 Ejemplo:
+abb_postorder();
 
 ## Variables
-Las variables utilizarán ------.
+Las variables utilizarán camel_Snake_Case (mezcla entre camelCase y snake_case).
 
 Ejemplo:
+s_Habitacion
+s_GameState
 
 ## Constantes y #define
 Las constantes y definiciones realizadas mediante #define se escribirán completamente en MAYÚSCULAS.

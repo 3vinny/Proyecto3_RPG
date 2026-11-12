@@ -9,7 +9,7 @@ typedef struct s_GameState
 {
     bool ejecutando;
     // s_Grafo *grafo
-    // s_Abb *abb 
+    s_Abb *T;
     //variables / structs / etc
 } s_GameState;
 
