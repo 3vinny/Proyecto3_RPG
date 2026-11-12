@@ -3,20 +3,34 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+/* ==== INICIAR/DESTRUIR ==== */
+void abb_crear(s_Abb *abb)
+{
+    if (abb) *abb = NULL;
+}
+
+void abb_destruir(s_Abb *abb)
+{
+    if (abb == NULL || *abb == NULL) return;
+    abb_destruir(&(*abb)->izq);
+    abb_destruir(&(*abb)->der);
+    free(*abb);
+    *abb = NULL;
+}
 
 /* ==== INSERCION/BUSQUEDA/ELIMINACION ==== */
 bool abb_insertar(s_Abb *abb, s_Habitacion H)
 {
-    if(abb == NULL)
+    if (abb == NULL)
     {
         return false;
     }
 
     //Arbol vacio
-    if(*abb == NULL)
+    if (*abb == NULL)
     {
         *abb = malloc(sizeof(s_NodoAbb));
-        if(*abb == NULL)
+        if (*abb == NULL)
         {
             printf("Sin espacio en memoria\n");
             return false;
@@ -27,7 +41,7 @@ bool abb_insertar(s_Abb *abb, s_Habitacion H)
         return true;
     }
 
-    if(H.id < (*abb)->dato.id)
+    if (H.id < (*abb)->dato.id)
     {
         return abb_insertar(&(*abb)->izq, H);
     }
@@ -37,6 +51,59 @@ bool abb_insertar(s_Abb *abb, s_Habitacion H)
     }
     return false;
 }
+
+s_NodoAbb* abb_buscar(s_Abb abb, int id)
+{
+    while (abb != NULL && abb->dato.id != id)
+    {
+        if (id < abb->dato.id)
+        {
+            abb = abb->izq;
+        }
+        else
+        {
+            abb = abb->der;
+        }
+    }
+    return abb;
+}
+
+bool abb_eliminar(s_Abb *abb, int id)
+{
+    /* Tres casos */
+    if (abb == NULL || *abb == NULL) return false;  
+
+    if (id < (*abb)->dato.id) return abb_eliminar(&(*abb)->izq, id);
+    if (id > (*abb)->dato.id) return abb_eliminar(&(*abb)->der, id);
+
+    // Encontrado, se hace nodo temporal
+    s_NodoAbb *temp = *abb;
+    if ((*abb)->izq == NULL)
+    {
+        *abb = (*abb)->der;
+        free(temp);
+    }
+    else if ((*abb)->der == NULL)
+    {
+        *abb = (*abb)->izq;
+        free(temp);
+    }
+    else
+    {
+        // 2 hijos: buscar sucesor minimo subarbol derecho
+        s_NodoAbb *sucesor = &(*abb)->der;
+        while ((*sucesor)->izq != NULL)
+        {
+            sucesor = &(*sucesor)->izq;
+        }
+        (*abb)->dato = (*sucesor)->dato;
+        s_NodoAbb *aux = *sucesor;
+        *sucesor = (*sucesor)->der;
+        free(aux);
+    }
+    return true;
+}
+
 /* ==== RECORRIDOS ==== */
 void abb_preorder(s_Abb abb)
 {
@@ -56,8 +123,6 @@ void abb_inorder(s_Abb abb)
     {
         return;
     }
-    printf("Imprimiendo habitaciones (IN ORDER)...\n");
-    sleep(1);
     abb_inorder(abb->izq);
     printf("ID: %d | %s (%s)\n",abb->dato.id, abb->dato.nombre, abb->dato.tipo);
     abb_inorder(abb->der);
@@ -73,4 +138,20 @@ void abb_postorder(s_Abb abb)
     abb_postorder(abb->izq);
     abb_postorder(abb->der);
     printf("ID: %d | %s (%s)\n",abb->dato.id, abb->dato.nombre, abb->dato.tipo);
+}
+
+/* ==== UTILIDADES ==== */
+bool abb_isempty(s_Abb abb)
+{
+
+}
+
+int abb_altura(s_Abb abb)
+{
+
+}
+
+int abb_contar_nodos(s_Abb abb)
+{
+
 }

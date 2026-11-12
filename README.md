@@ -1,6 +1,5 @@
 # Proyecto3_RPG
 Proyecto N°3 de la asignatura Estructura de Datos, correspondiente a un juego RPG: Explorador de Mazmorras, utilizando Grafos, ABB y AVL.
-(Se puede usar proyecto anterior como base).
 
 # Integrantes
 - Ariel Barría

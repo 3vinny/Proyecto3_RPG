@@ -17,7 +17,7 @@ void abb_crear(s_Abb *abb);
 void abb_destruir(s_Abb *abb);  // Libera memoria en postorder
 
 /* ==== INSERCION/BUSQUEDA/ELIMINACION ==== */
-bool abb_insertar(s_Abb *abb, s_Habitacion H);
+bool abb_insertar(s_Abb *abb, s_Habitacion H); // abb_insertar retorna false cuando el ID ya existe
 s_NodoAbb* abb_buscar(s_Abb abb, int id);  // nodo o NULL
 bool abb_eliminar(s_Abb *abb, int id);  // casos: hoja, 1 hijo, 2 hijos (false si no existe)
 
