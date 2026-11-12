@@ -91,7 +91,7 @@ bool abb_eliminar(s_Abb *abb, int id)
     else
     {
         // 2 hijos: buscar sucesor minimo subarbol derecho
-        s_NodoAbb *sucesor = &(*abb)->der;
+        s_NodoAbb *(*sucesor) = &(*abb)->der;
         while ((*sucesor)->izq != NULL)
         {
             sucesor = &(*sucesor)->izq;
@@ -107,10 +107,7 @@ bool abb_eliminar(s_Abb *abb, int id)
 /* ==== RECORRIDOS ==== */
 void abb_preorder(s_Abb abb)
 {
-    if(abb == NULL)
-    {
-        return;
-    }
+    if (abb == NULL) return;
 
     printf("ID: %d | %s (%s)\n",abb->dato.id, abb->dato.nombre, abb->dato.tipo);
     abb_preorder(abb->izq);
@@ -119,10 +116,8 @@ void abb_preorder(s_Abb abb)
 
 void abb_inorder(s_Abb abb)
 {
-    if(abb == NULL)
-    {
-        return;
-    }
+    if (abb == NULL) return;
+
     abb_inorder(abb->izq);
     printf("ID: %d | %s (%s)\n",abb->dato.id, abb->dato.nombre, abb->dato.tipo);
     abb_inorder(abb->der);
@@ -130,10 +125,7 @@ void abb_inorder(s_Abb abb)
 
 void abb_postorder(s_Abb abb)
 {
-    if(abb == NULL)
-    {
-        return;
-    }
+    if (abb == NULL) return;
 
     abb_postorder(abb->izq);
     abb_postorder(abb->der);
@@ -143,15 +135,21 @@ void abb_postorder(s_Abb abb)
 /* ==== UTILIDADES ==== */
 bool abb_isempty(s_Abb abb)
 {
-
+    return (abb == NULL);
 }
 
 int abb_altura(s_Abb abb)
 {
-
+    if (abb == NULL) return 0;
+    // version simplificada para evitar la repeticion exponencial
+    int altura_izq = abb_altura(abb->izq);
+    int altura_der = abb_altura(abb->der);
+    return (altura_izq > altura_der ? altura_izq : altura_der) + 1;
 }
 
 int abb_contar_nodos(s_Abb abb)
 {
-
+    if (abb == NULL)
+        return 0;
+    return 1 + abb_contar_nodos(abb->izq) + abb_contar_nodos(abb->der);
 }

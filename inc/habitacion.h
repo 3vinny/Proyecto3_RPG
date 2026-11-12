@@ -12,8 +12,6 @@ typedef struct {
 } s_Habitacion;
 
 /* ==== UTILIDADES ==== */
-// const: solo lectura
-void habitacion_imprimir(const s_Habitacion *h);
 // Compara tipo contra los strings validos 
 // (INICIO, NORMAL, TESORO, JEFE, COMBATE, VACIA, SECRETA)
 int habitacion_comparar(const char *tipo);

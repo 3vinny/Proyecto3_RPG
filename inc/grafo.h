@@ -55,6 +55,5 @@ int *grafo_bfs_nivel(s_Grafo *grafo, int origen, int k, int *cantidad);
 bool grafo_isempty(s_Grafo *grafo);
 int grafo_num_vertices(s_Grafo *grafo);
 int grafo_num_aristas(s_Grafo *grafo);
-void grafo_imprimir(s_Grafo *grafo);
 
 #endif
