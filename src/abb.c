@@ -56,7 +56,8 @@ void abb_inorder(s_Abb abb)
     {
         return;
     }
-
+    printf("Imprimiendo habitaciones (IN ORDER)...\n");
+    sleep(1);
     abb_inorder(abb->izq);
     printf("ID: %d | %s (%s)\n",abb->dato.id, abb->dato.nombre, abb->dato.tipo);
     abb_inorder(abb->der);

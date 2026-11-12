@@ -1,5 +1,7 @@
 #ifndef HABITACION_H
 #define HABITACION_H
+#include <stdlib.h>
+#include <unistd.h>
 
 typedef struct {
     int id;
