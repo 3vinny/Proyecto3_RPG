@@ -13,7 +13,7 @@ int leer_entero()
 
         while ((c = getchar()) != '\n' && c != EOF); // Limpia el buffer
         printf("\n");
-        ui_mensaje_error("Debe ingresar un numero entero");
+        error("Debe ingresar un numero entero");
         printf("\nIntente nuevamente: ");;
     }
 

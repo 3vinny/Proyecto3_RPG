@@ -1,4 +1,6 @@
 #include <stdbool.h>
+#include <stdio.h>
+#include <stdlib.h>
 #include "grafo.h"
 
 /* ==== FUNCIONES: INICIAR/DESTRUIR ==== */
@@ -120,7 +122,95 @@ s_Vertice *grafo_buscar_vertice(s_Grafo *grafo, int id) // NULL si no existe
 }
 
 /* ==== ARISTAS ==== */
-bool grafo_agregar_arista(s_Grafo *grafo, int id_a, int id_b);
+bool agregar_adyacente(s_Vertice *v, int id_vecino)
+{
+    s_Adyacente *nuevo_a = malloc(sizeof(s_Adyacente));
+
+    if(nuevo_a == NULL)
+    {
+        error("Memoria insuficiente");
+        return false;
+    }
+
+    nuevo_a->id_vecino = id_vecino;
+    nuevo_a->siguiente = v->adyacentes; 
+    v->adyacentes = nuevo_a;
+
+    return true;
+}
+
+bool quitar_adyacente(s_Vertice *v, int id_vecino)
+{
+    s_Adyacente *adyacente = v->adyacentes;
+    s_Adyacente *anterior_a = NULL;
+
+    while(adyacente != NULL)
+    {
+        if(adyacente->id_vecino == id_vecino)
+        {
+            if(anterior_a == NULL)
+                v->adyacentes = adyacente->siguiente;
+            else
+                anterior_a->siguiente = adyacente->siguiente;
+
+            free(adyacente);
+            return true;
+        }
+        anterior_a = adyacente;
+        adyacente = adyacente->siguiente;
+    }
+
+    return false;
+}
+
+bool grafo_agregar_arista(s_Grafo *grafo, int id_a, int id_b)
+{
+    if(grafo == NULL)
+    {
+        error("Grafo inexistente");
+        return false;
+    }
+
+    if(id_a == id_b)
+    {
+        error("No se permiten los mismos vertices");
+        return false;
+    }
+
+    s_Vertice *a = grafo_buscar_vertice(grafo, id_a);
+    s_Vertice *b = grafo_buscar_vertice(grafo, id_b);
+
+    if(a == NULL || b == NULL)
+    {
+        error("Vertice inexistente");
+        return false;
+    }
+
+    s_Adyacente *adyacente = a->adyacentes;
+
+    while(adyacente != NULL) // Comprueba si la arista ya existe
+    {
+        if(adyacente->id_vecino == id_b)
+        {
+            error("La arista ya existe");
+            return false;
+        }
+        adyacente = adyacente->siguiente;
+    }
+
+    if(agregar_adyacente(a, id_b) == false) return false;
+
+    if(agregar_adyacente(b, id_a) == false)
+    {
+        quitar_adyacente(a, id_b); 
+        return false;
+    }
+
+    grafo->num_aristas++;
+
+    return true;
+}
+
 bool grafo_eliminar_arista(s_Grafo *grafo, int id_a, int id_b);
 int grafo_grado(s_Grafo *grafo, int id);
 
@@ -142,20 +232,10 @@ bool grafo_isempty(s_Grafo *grafo)
     if(grafo == NULL)
     {
         error("Grafo inexistente");
-        return NULL;
+        return true;
     }
 
-    int n = 0;
-    
-    s_Vertice *v = grafo->vertices;
-
-    while(v != NULL)
-    {
-        v = v->siguiente;
-        n++;
-    }
-
-    return (n != 0) ? true : false; 
+    return (grafo->num_vertices == 0) ? true : false;
 }
 
 int grafo_num_vertices(s_Grafo *grafo)
