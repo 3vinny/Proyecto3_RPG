@@ -39,8 +39,16 @@ void validar_rango(int *num, int min, int max);
  */
 bool leer_si_no(void);
 
+/**
+ * @brief Imprime el prompt ">" para ingresar una opcion.
+ */
 void imprimir_ingresar_opcion();
 
+/**
+ * @brief Imprime un mensaje de error en rojo
+ * 
+ * @param texto Mensaje a mostrar (no NULL).
+ */
 void error(const char *texto);
 
 #endif

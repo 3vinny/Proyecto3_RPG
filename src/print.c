@@ -1,10 +1,11 @@
 #include "print.h"
 #include <stdio.h>
-
+#include <stdlib.h>
+#include <unistd.h>
 
 void print_menu(const char *nombre_actual, int id_actual)
 {
-    printf("\t====(NOMBRE DEL JUEGO)====\n");
+    printf("\t==== RPG: El Escapista de Mazmorras ====\n");
     printf("\t1. Consultar habitacion\n");
     printf("\t2. Mostrar habitaciones vecinas\n");
     printf("\t3. Moverse a una habitacion vacia\n");
@@ -21,7 +22,6 @@ void print_menu(const char *nombre_actual, int id_actual)
     printf("\n");
 }
 
-
 void print_habitacion(s_Habitacion H)
 {
     system("clear");
@@ -33,8 +33,3 @@ void print_habitacion(s_Habitacion H)
     printf("Enemigo: %s\n", H.enemigo);
     sleep(2);
 }
-
-
-
-
-void print_habitacion(s_Habitacion H);
