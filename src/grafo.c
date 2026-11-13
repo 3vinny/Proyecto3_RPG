@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "grafo.h"
+#include "comunes.h"
 
 /* ==== FUNCIONES: INICIAR/DESTRUIR ==== */
 void grafo_crear(s_Grafo *grafo)
@@ -322,7 +323,87 @@ int grafo_grado(s_Grafo *grafo, int id)
 
 /* ==== BUSQUEDA ==== */
 // BFS: ruta + corta entre origen-destino. retorna true si hay ruta, false si no
-bool grafo_bfs_ruta(s_Grafo *grafo, int origen, int dest, int *ruta, int max_ruta, int *longitud);
+bool grafo_bfs_ruta(s_Grafo *grafo, int origen, int dest, int *ruta, int max_ruta, int *longitud)
+{
+    if (grafo == NULL || ruta == NULL || longitud == NULL) return false;
+    *longitud = 0;
+    if (grafo->vertices == NULL) return false;
+
+    int n = grafo->num_vertices;
+
+    /* Arreglo con los IDs de todos los vertices (para mapear ID <-> indices) */
+    int *ids = malloc(n * sizeof(int));
+    if (ids == NULL) return false;
+    int m = 0;
+    for (s_Vertice *v = grafo->vertices; v != NULL && m < n; v = v->siguiente)
+    {
+        ids[m++] = v->id;
+    }
+
+    int i_origen = -1;
+    int i_dest = -1;
+
+    for (int i = 0; i < m; i++)
+    {
+        if (ids[i] == origen) i_origen = i;
+        if (ids[i] == dest) i_dest = i;
+    }
+    if (i_origen < 0 || i_dest < 0)
+    {
+        free(ids);
+        return false;
+    }
+
+    bool *visitado = malloc(m * sizeof(bool));
+    int *padre = malloc(m * sizeof(int));
+    int *cola = malloc(m * sizeof(int));
+    if (visitado == NULL || padre == NULL || cola == NULL)
+    {
+        free(ids);
+        free(visitado);
+        free(padre);
+        free(cola);
+        return false;
+    }
+    for (int i=0; i < m; i++)
+    {
+        visitado[i] = false;
+        padre[i] = -1;
+    }
+
+    int frente = 0;
+    int fin = 0;
+    cola[fin++] = i_origen;
+    visitado[i_origen] = true;
+
+    while (frente < fin)
+    {
+        int actual = cola[frente++];
+        if (actual == i_dest) break;
+
+        s_Vertice *v = grafo->vertices;
+        for (int i=0; i < actual; i++) v = v->siguiente;
+
+        for (s_Arista *a = v->aristas; a != NULL; a = siguiente)
+        {
+            int i_vecino = -1;
+            for (int i = 0; i < m; i++)
+            {
+                if (ids[i] == a->destino)
+                {
+                    i_vecino = i;
+                    break;
+                }
+                if (i_vecino >= 0 && !visitado[i_vecino])
+                {
+                    visitado[idx_vecino] = true;
+                    padre[idx_vecino] = actual;
+                    cola[fin++] = idx_vecino;
+                }
+            }
+        }
+    }
+}
 
 // DFS: todas alcanzables desde el origen incluyendo el origen
 // arreglo dinamico (hacer free) | NULL si error | cantidad: numero ids en arreglo.

@@ -44,7 +44,11 @@ int grafo_grado(s_Grafo *grafo, int id);
 
 /* ==== BUSQUEDA ==== */
 bool grafo_bfs_ruta(s_Grafo *grafo, int origen, int dest, int *ruta, int max_ruta, int *longitud);
-int *grafo_dfs_alc(s_Grafo *grafo, int origen, int k, int *cantidad);
+int *grafo_dfs_alc(s_Grafo *grafo, int origen, int *cantidad);
+
+/*
+ * exactamente en nivel k, sin incluir el origen
+ */
 int *grafo_bfs_nivel(s_Grafo *grafo, int origen, int k, int *cantidad);
 
 /* ==== UTILIDADES ==== */

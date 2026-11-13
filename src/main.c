@@ -7,15 +7,16 @@
 
 int main(void)
 {
-    s_GameState gs = {0};
+    s_GameState gs;
+    juego_inicializar(&gs);
     gs.ejecutando = true;
-    gs.T = NULL;
 
+    gs.abb = NULL;
 
    //habitacion de prueba para probar el main :V
    s_Habitacion inicio = {1,"celda","celda con la puerta rota","INICIO","-","-"};
 
-   abb_insertar(&gs.T, inicio);
+   abb_insertar(&gs.abb, inicio);
    gs.id_actual = 1;
 
     while(gs.ejecutando)
@@ -34,7 +35,7 @@ int main(void)
             break;
         case 6:
             system("clear");
-            abb_inorder(gs.T);
+            abb_inorder(gs.abb);
             sleep(1);
             break;
         case 11:
