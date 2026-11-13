@@ -1,7 +1,14 @@
+<<<<<<< HEAD
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
+=======
+>>>>>>> 202bfad (merge)
 #include "grafo.h"
+#include "comunes.h"
+#include <stdbool.h>
+#include <stdio.h>
+#include <stdlib.h>
 
 /* ==== FUNCIONES: INICIAR/DESTRUIR ==== */
 void grafo_crear(s_Grafo *grafo)
@@ -66,7 +73,8 @@ bool grafo_agregar_vertice(s_Grafo *grafo, int id)
         v = v->siguiente;
     }
 
-    s_Vertice *nuevo_v= malloc(sizeof(struct s_Vertice));
+    // el resto del archivo usa s_Vertice como tipo
+    s_Vertice *nuevo_v = malloc(sizeof(*nuevo_v)));
 
     if(nuevo_v == NULL)
     {
@@ -90,10 +98,33 @@ bool grafo_agregar_vertice(s_Grafo *grafo, int id)
 
 bool grafo_eliminar_vertice(s_Grafo *grafo, int id)
 {
+    if (grafo == NULL)
+    {
+        error("Grafo inexistente");
+        return false;
+    }
     // 1. Encontrar y desligar el vértice de la lista de vértices
+    s_Vertice *ant = NULL;
+    s_Vertice *v = grafo->vertices;
+    while (v != NULL && v->id != id)
+    {
+        ant = v;
+        v = v->siguiente;
+    }
+    if (v == NULL) return false;
+
     // 2. Contar cuántas aristas se destruyen (para actualizar num_aristas)
+    int aristas_destruidas = 0;
+    s_Adyacente *ady = v->adyacentes;
+    while (ady != NULL)
+    {
+        aristas_destruidas++;
+        ady = ady->siguientes;
+
+    }
     // 3. Recorrer cada vértice restante y eliminar aristas hacia 'id'
     // 4. Liberar la lista de adyacencia del vértice eliminado y el nodo
+    return true;
 }
 
 bool grafo_existe_vertice(s_Grafo *grafo, int id)
@@ -122,6 +153,7 @@ s_Vertice *grafo_buscar_vertice(s_Grafo *grafo, int id) // NULL si no existe
 }
 
 /* ==== ARISTAS ==== */
+<<<<<<< HEAD
 bool agregar_adyacente(s_Vertice *v, int id_vecino)
 {
     s_Adyacente *nuevo_a = malloc(sizeof(s_Adyacente));
@@ -166,10 +198,16 @@ bool quitar_adyacente(s_Vertice *v, int id_vecino)
 bool grafo_agregar_arista(s_Grafo *grafo, int id_a, int id_b)
 {
     if(grafo == NULL)
+=======
+bool grafo_agregar_arista(s_Grafo *grafo, int id_a, int id_b)
+{
+    if (grafo == NULL)
+>>>>>>> 202bfad (merge)
     {
         error("Grafo inexistente");
         return false;
     }
+<<<<<<< HEAD
 
     if(id_a == id_b)
     {
@@ -277,6 +315,21 @@ int grafo_grado(s_Grafo *grafo, int id)
     }
 
     return grado;
+=======
+    if (id_a == id_b) return false; /* No pueden ser iguales */
+
+    return true;
+}
+bool grafo_eliminar_arista(s_Grafo *grafo, int id_a, int id_b);
+
+int grafo_grado(s_Grafo *grafo, int id)
+{
+    s_Vertice *v = grafo_buscar_vertice(grafo, id);
+    if (v == NULL) return -1;
+
+    int grado = 0;
+    for ()
+>>>>>>> 202bfad (merge)
 }
 
 /* ==== BUSQUEDA ==== */
@@ -300,7 +353,11 @@ bool grafo_isempty(s_Grafo *grafo)
         return true;
     }
 
+<<<<<<< HEAD
     return (grafo->num_vertices == 0) ? true : false;
+=======
+    return (grafo->vertices == NULL); 
+>>>>>>> 202bfad (merge)
 }
 
 int grafo_num_vertices(s_Grafo *grafo)
