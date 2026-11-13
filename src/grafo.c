@@ -23,7 +23,7 @@ void grafo_destruir(s_Grafo *grafo)
     while(vertice != NULL) // Recorre todos los vertices hasta que sea NULL
     {
         s_Adyacente *adyacente = vertice->adyacentes;
-        
+
         while(adyacente != NULL) // Recorre los vertices adyacentes hasta que sea NULL
         {
             s_Adyacente *sig_adyacente = adyacente->siguiente;
@@ -42,7 +42,50 @@ void grafo_destruir(s_Grafo *grafo)
 }
 
 /* ==== VERTICES ==== */
-bool grafo_agregar_vertice(s_Grafo *grafo, int id);
+bool grafo_agregar_vertice(s_Grafo *grafo, int id)
+{
+    if(grafo == NULL)
+    {
+        error("Grafo inexistente");
+        return false;
+    }
+
+    s_Vertice *v = grafo->vertices;
+    s_Vertice *ultimo_v = NULL; 
+
+    while(v != NULL) // Comprueba si el id ya existe
+    {
+        if(v->id == id) 
+        {
+            error("El vertice ya existe");
+            return false;
+        }
+        ultimo_v = v;
+        v = v->siguiente;
+    }
+
+    s_Vertice *nuevo_v= malloc(sizeof(struct s_Vertice));
+
+    if(nuevo_v == NULL)
+    {
+        error("Memoria insuficiente");
+        return false;
+    }
+
+    nuevo_v->adyacentes = NULL;
+    nuevo_v->id = id;
+    nuevo_v->siguiente = NULL;
+
+    if(ultimo_v == NULL)
+        grafo->vertices = nuevo_v;
+    else
+        ultimo_v->siguiente = nuevo_v;
+
+    grafo->num_vertices++;
+
+    return true;
+}
+
 bool grafo_eliminar_vertice(s_Grafo *grafo, int id)
 {
     // 1. Encontrar y desligar el vértice de la lista de vértices
@@ -51,8 +94,30 @@ bool grafo_eliminar_vertice(s_Grafo *grafo, int id)
     // 4. Liberar la lista de adyacencia del vértice eliminado y el nodo
 }
 
-bool grafo_existe_vertice(s_Grafo *grafo, int id);
-s_Vertice *grafo_buscar_vertice(s_Grafo *grafo, int id); // NULL si no existe
+bool grafo_existe_vertice(s_Grafo *grafo, int id)
+{
+    if(grafo_buscar_vertice(grafo, id) != NULL) return true;
+    else return false;
+}
+
+s_Vertice *grafo_buscar_vertice(s_Grafo *grafo, int id) // NULL si no existe
+{
+    if(grafo == NULL)
+    {
+        error("Grafo inexistente");
+        return NULL;
+    }
+
+    s_Vertice *v = grafo->vertices;
+
+    while(v != NULL)
+    {
+        if(v->id == id) return v;
+        v = v->siguiente;
+    }
+
+    return NULL;
+}
 
 /* ==== ARISTAS ==== */
 bool grafo_agregar_arista(s_Grafo *grafo, int id_a, int id_b);
@@ -72,7 +137,46 @@ int *grafo_dfs_alc(s_Grafo *grafo, int origen, int k, int *cantidad);
 int *grafo_bfs_nivel(s_Grafo *grafo, int origen, int k, int *cantidad);
 
 /* ==== UTILIDADES ==== */
-bool grafo_isempty(s_Grafo *grafo);
-int grafo_num_vertices(s_Grafo *grafo);
-int grafo_num_aristas(s_Grafo *grafo);
+bool grafo_isempty(s_Grafo *grafo)
+{
+    if(grafo == NULL)
+    {
+        error("Grafo inexistente");
+        return NULL;
+    }
+
+    int n = 0;
+    
+    s_Vertice *v = grafo->vertices;
+
+    while(v != NULL)
+    {
+        v = v->siguiente;
+        n++;
+    }
+
+    return (n != 0) ? true : false; 
+}
+
+int grafo_num_vertices(s_Grafo *grafo)
+{
+    if (grafo == NULL)
+    {
+        error("Grafo inexistente");
+        return 0;
+    }
+
+    return grafo->num_vertices;
+}
+
+int grafo_num_aristas(s_Grafo *grafo)
+{
+    if (grafo == NULL)
+    {
+        error("Grafo inexistente");
+        return 0;
+    }
+
+    return grafo->num_aristas;
+}
 void grafo_imprimir(s_Grafo *grafo);
