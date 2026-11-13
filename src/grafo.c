@@ -18,11 +18,11 @@ void grafo_destruir(s_Grafo *grafo)
         return;
     }
 
-    s_Vertice *vertice = grafo->vertices;
+    s_Vertice *v = grafo->vertices;
 
-    while(vertice != NULL) // Recorre todos los vertices hasta que sea NULL
+    while(v != NULL) // Recorre todos los vertices hasta que sea NULL
     {
-        s_Adyacente *adyacente = vertice->adyacentes;
+        s_Adyacente *adyacente = v->adyacentes;
 
         while(adyacente != NULL) // Recorre los vertices adyacentes hasta que sea NULL
         {
@@ -31,9 +31,9 @@ void grafo_destruir(s_Grafo *grafo)
             adyacente = sig_adyacente; 
         }
 
-        s_Vertice *sig_vertice = vertice->siguiente;
-        free(vertice);
-        vertice = sig_vertice;
+        s_Vertice *sig_v = v->siguiente;
+        free(v);
+        v = sig_v;
     }
 
     grafo->vertices = NULL;
@@ -179,4 +179,36 @@ int grafo_num_aristas(s_Grafo *grafo)
 
     return grafo->num_aristas;
 }
-void grafo_imprimir(s_Grafo *grafo);
+
+void grafo_imprimir(s_Grafo *grafo)
+{
+    if(grafo == NULL)
+    {
+        error("Grafo inexistente");
+        return;
+    }
+
+    if(grafo->vertices == NULL)
+    {
+        printf("Grafo vacio\n");
+        return;
+    }
+
+    s_Vertice *v = grafo->vertices;
+
+    while(v != NULL) // Recorre todos los vertices
+    {
+        printf("\nVertice %d:", v->id);
+
+        s_Adyacente *adyacente = v->adyacentes;
+
+        while(adyacente != NULL) // Recorre los vecinos del vertice
+        {
+            printf(" [%d] -", adyacente->id_vecino);
+            adyacente = adyacente->siguiente;
+        }
+
+        printf("\n");
+        v = v->siguiente;
+    }
+}
