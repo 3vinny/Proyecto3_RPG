@@ -4,6 +4,36 @@
 #include "grafo.h"
 #include "comunes.h"
 
+/* ==== FUNCIONES LOCALES PARA EVITAR REPETICIONES ==== */
+static int *grafo_mapear_ids(s_Grafo *grafo, int *out)
+{
+    int n = grafo->num_vertices;
+    int *ids = malloc(n * sizeof(int));
+    if (!ids) return NULL;
+    int m = 0;
+
+    for (s_Vertice *v = grafo->vertices; v && m < n; v = v->siguiente) 
+    {
+        ids[m++] = v->id;
+    }
+    *out = m;
+    return ids;
+}
+
+static int grafo_indice_por_id(int *ids, int n, int id)
+{
+    for (int i = 0; i < n; i++)
+        if (ids[i] == id) return i;
+    return -1;
+}
+
+static s_Vertice *grafo_vertice_por_indice(s_Grafo *grafo, int idx)
+{
+    s_Vertice *v = grafo->vertices;
+    for (int i = 0; i < idx && v; i++) v = v->siguiente;
+    return v;
+}
+
 /* ==== FUNCIONES: INICIAR/DESTRUIR ==== */
 void grafo_crear(s_Grafo *grafo)
 {
@@ -382,36 +412,184 @@ bool grafo_bfs_ruta(s_Grafo *grafo, int origen, int dest, int *ruta, int max_rut
         if (actual == i_dest) break;
 
         s_Vertice *v = grafo->vertices;
-        for (int i=0; i < actual; i++) v = v->siguiente;
+        for (int i = 0; i < actual; i++) v = v->siguiente;
 
-        for (s_Arista *a = v->aristas; a != NULL; a = siguiente)
+        // Recorrer adyacentes
+        for (s_Adyacente *a = v->adyacentes; a != NULL; a = a->siguiente)
         {
+            // Buscar indice del vecino en el array ids[]
             int i_vecino = -1;
             for (int i = 0; i < m; i++)
             {
-                if (ids[i] == a->destino)
+                if (ids[i] == a->id_vecino)
                 {
                     i_vecino = i;
                     break;
                 }
-                if (i_vecino >= 0 && !visitado[i_vecino])
-                {
-                    visitado[idx_vecino] = true;
-                    padre[idx_vecino] = actual;
-                    cola[fin++] = idx_vecino;
-                }
+            }
+            // Si se encontro y no visitado, encolar
+            if (i_vecino >= 0 && !visitado[i_vecino])
+            {
+                visitado[i_vecino] = true;
+                padre[i_vecino] = actual;
+                cola[fin++] = i_vecino;
             }
         }
     }
+
+    if (!visitado[i_dest]) {
+        free(ids); 
+        free(visitado); 
+        free(padre); 
+        free(cola);
+        return false;
+    }
+
+    // Reconstruir camino hacia atras
+    int idx = i_dest;
+    int len = 0;
+    while (idx != -1 && len < max_ruta)
+    {
+        ruta[len++] = ids[idx];
+        idx = padre[idx];
+    }
+    // Invertir
+    for (int i = 0; i < len / 2; i++)
+    {
+        int tmp = ruta[i];
+        ruta[i] = ruta[len - 1 - i];
+        ruta[len - 1 - i] = tmp;
+    }
+    *longitud = len;
+
+    free(ids); 
+    free(visitado); 
+    free(padre); 
+    free(cola);
+    return true;
 }
 
 // DFS: todas alcanzables desde el origen incluyendo el origen
 // arreglo dinamico (hacer free) | NULL si error | cantidad: numero ids en arreglo.
-int *grafo_dfs_alc(s_Grafo *grafo, int origen, int k, int *cantidad);
+int *grafo_dfs_alc(s_Grafo *grafo, int origen, int *cantidad);
 
 // BFS POR NIVELES: a k pasos del origen.
 // arreglo dinamico (hacer free) | NULL si error | k=0 es origen
-int *grafo_bfs_nivel(s_Grafo *grafo, int origen, int k, int *cantidad);
+int *grafo_bfs_nivel(s_Grafo *grafo, int origen, int k, int *cantidad)
+{
+    if (grafo == NULL || cantidad == NULL || k < 0) return NULL;
+    *cantidad = 0;
+    if (grafo->vertices == NULL) return NULL;
+
+    int n = grafo->num_vertices;
+    int *ids = malloc(n * sizeof(int));
+    if (ids == NULL) return NULL;
+    
+    int m = 0;
+    for (s_Vertice *v = grafo->vertices; v != NULL && m < n; v = v->siguiente)
+        ids[m++] = v->id;
+
+    int i_origen = -1;
+    for (int i = 0; i < m; i++)
+    {
+        if (ids[i] == origen)
+        { 
+            i_origen = i; 
+            break;
+        }
+    }
+
+    if (i_origen < 0)
+    { 
+        free(ids); 
+        return NULL;
+    }
+    if (k == 0)
+    {
+        int *res = malloc(sizeof(int));
+        if (res)
+        { 
+            res[0] = origen; 
+            *cantidad = 1;
+        }
+        free(ids);
+        return res;
+    }
+
+    bool *visitado = calloc(m, sizeof(bool));
+    int *dist = malloc(m * sizeof(int));
+    int *cola = malloc(m * sizeof(int));
+    if (!visitado || !dist || !cola)
+    {
+        free(ids); 
+        free(visitado); 
+        free(dist); 
+        free(cola);
+        return NULL;
+    }
+    int frente = 0, fin = 0;
+    cola[fin++] = i_origen;
+    visitado[i_origen] = true;
+    dist[i_origen] = 0;
+
+    while (frente < fin)
+    {
+        int actual = cola[frente++];
+        if (dist[actual] == k) continue; // no expandir más allá de k
+
+        s_Vertice *v = grafo->vertices;
+        for (int i = 0; i < actual; i++) 
+            v = v->siguiente;
+        for (s_Adyacente *a = v->adyacentes; a != NULL; a = a->siguiente)
+        {
+            int idx = -1;
+            for (int i = 0; i < m; i++)
+            {
+                if (ids[i] == a->id_vecino)
+                { 
+                    idx = i; 
+                    break;
+                }
+            }
+                
+            if (idx >= 0 && !visitado[idx])
+            {
+                visitado[idx] = true;
+                dist[idx] = dist[actual] + 1;
+                cola[fin++] = idx;
+            }
+        }
+    }
+    // Contar y recolectar los de nivel k
+    int count = 0;
+    for (int i = 0; i < m; i++)
+    {
+        if (dist[i] == k) 
+            count++;
+    }
+
+    int *resultado = NULL;
+    if (count > 0)
+    {
+        resultado = malloc(count * sizeof(int));
+        if (resultado)
+        {
+            int j = 0;
+            for (int i = 0; i < m; i++)
+            {
+                if (dist[i] == k)
+                    resultado[j++] = ids[i];
+            }   
+        }
+    }
+
+    free(ids);
+    free(visitado);
+    free(dist);
+    free(cola);
+    *cantidad = count;
+    return resultado;
+}
 
 /* ==== UTILIDADES ==== */
 bool grafo_isempty(s_Grafo *grafo)
