@@ -211,8 +211,73 @@ bool grafo_agregar_arista(s_Grafo *grafo, int id_a, int id_b)
     return true;
 }
 
-bool grafo_eliminar_arista(s_Grafo *grafo, int id_a, int id_b);
-int grafo_grado(s_Grafo *grafo, int id);
+bool grafo_eliminar_arista(s_Grafo *grafo, int id_a, int id_b)
+{
+    if(grafo == NULL)
+    {
+        error("Grafo inexistente");
+        return false;
+    }
+
+    if(id_a == id_b)
+    {
+        error("No se permiten los mismos vertices");
+        return false;
+    }
+
+    s_Vertice *a = grafo_buscar_vertice(grafo, id_a);
+    s_Vertice *b = grafo_buscar_vertice(grafo, id_b);
+
+    if(a == NULL || b == NULL)
+    {
+        error("Vertice inexistente");
+        return false;
+    }
+
+    if(quitar_adyacente(a, id_b) == false)
+    {
+        error("La arista no existe");
+        return false;
+    }
+
+    if(quitar_adyacente(b, id_a) == false)
+    {
+        error("Aristas mal conectadas");
+        return false;
+    }
+
+    grafo->num_aristas--;
+
+    return true;
+}
+
+int grafo_grado(s_Grafo *grafo, int id)
+{
+    if(grafo == NULL)
+    {
+        error("Grafo inexistente");
+        return -1;
+    }
+
+    s_Vertice *v = grafo_buscar_vertice(grafo, id);
+
+    if(v == NULL)
+    {
+        error("Vertice inexistente");
+        return;
+    }
+
+    int grado = 0;
+    s_Adyacente *adyacente = v->adyacentes;
+    
+    while(adyacente != NULL)
+    {
+        grado++;
+        adyacente = adyacente->siguiente;
+    }
+
+    return grado;
+}
 
 /* ==== BUSQUEDA ==== */
 // BFS: ruta + corta entre origen-destino. retorna true si hay ruta, false si no
