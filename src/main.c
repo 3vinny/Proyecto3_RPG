@@ -1,5 +1,6 @@
 #include "juego.h"
 #include "print.h"
+#include "mazmorra.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
@@ -21,16 +22,21 @@ int main(void)
 
     while(gs.ejecutando)
     {
-        print_menu(inicio.nombre, inicio.id);
+        s_NodoAbb *hab_actual = abb_buscar(gs.abb, gs.id_actual);
+        print_menu(hab_actual ? hab_actual->dato.nombre : "Desconocida", gs.id_actual);
         int opcion = seleccionar_opcion();
         switch (opcion)
         {
         case 1:
-            print_habitacion(inicio);
+            consultar_habitacion(&gs);
             break;
         case 2:
             system("clear");
-            printf("habitacioens vecinas :v\n");
+            mostrar_vecinas(&gs);
+            sleep(1);
+            break;
+        case 3:
+            moverse_habitacion(&gs);
             sleep(1);
             break;
         case 6:

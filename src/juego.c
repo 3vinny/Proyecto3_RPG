@@ -5,10 +5,10 @@ void juego_inicializar(s_GameState *gs)
     if (gs == NULL) return;
     gs->ejecutando = false;
     gs->id_actual  = -1;
-    grafo_crear(&gs->grafo);
+    grafo_crear(&gs->grafo); 
     abb_crear(&gs->abb);
     lista_crear(&gs->visitadas);
-    pendientes_crear(&gs->pendientes);
+    // pendientes_crear(&gs->pendientes); comentado para avanzar otras cosas
 }
 
 void juego_destruir(s_GameState *gs)
@@ -17,7 +17,7 @@ void juego_destruir(s_GameState *gs)
     grafo_destruir(&gs->grafo);
     abb_destruir(&gs->abb);
     lista_destruir(&gs->visitadas);
-    pendientes_destruir(&gs->pendientes);
+    // pendientes_destruir(&gs->pendientes); 
     gs->ejecutando = false;
 }
 

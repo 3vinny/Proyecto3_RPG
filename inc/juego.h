@@ -5,7 +5,7 @@
 #include "stdio.h"
 #include "grafo.h"
 #include "lista.h"
-#include "pendientes.h"
+//#include "pendientes.h" comentado para avanzar otras cosas
 #include <stdbool.h>
 
 typedef struct s_GameState
@@ -15,7 +15,7 @@ typedef struct s_GameState
     s_Abb abb;
     s_Grafo grafo;
     s_Lista visitadas;
-    s_Pendientes pendientes;
+    //s_Pendientes pendientes;
     //variables / structs / etc
 } s_GameState;
 
