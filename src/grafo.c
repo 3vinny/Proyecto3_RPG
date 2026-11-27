@@ -264,7 +264,7 @@ bool grafo_agregar_arista(s_Grafo *grafo, int id_a, int id_b)
     {
         if(adyacente->id_vecino == id_b)
         {
-            error("La arista ya existe");
+            //error("La arista ya existe");
             return false;
         }
         adyacente = adyacente->siguiente;

@@ -3,6 +3,7 @@
 #include "print.h"
 #include <stdio.h>
 #include <string.h>
+#include <stdlib.h>
 
 void consultar_habitacion(s_GameState *gs)
 {
@@ -78,7 +79,7 @@ void moverse_habitacion(s_GameState *gs)
         return;
     }
 
-    //actualizar la posiciona ctual y registrar en visitadas
+    //actualizar la posiciona actual y registrar en visitadas
     gs->id_actual = id_destino;
     if(!lista_buscar(&gs->visitadas, id_destino))
     {
@@ -105,4 +106,79 @@ void moverse_habitacion(s_GameState *gs)
         } 
     }
 
+}
+
+bool cargar_mazmorra(s_GameState *gs, const char *nombre_archivo)
+{
+    if(gs == NULL || nombre_archivo == NULL) return false;
+
+    FILE *f = fopen(nombre_archivo, "r");
+    if(f == NULL)
+    {
+        printf("Error para abrir el archivo\n");
+        return false;
+    }
+
+    char linea[512];
+    while(fgets(linea,sizeof(linea), f) != NULL)
+    {
+        linea[strcspn(linea, "\r\n")] = '\0';
+        if(linea[0] == '\0' || linea[0] == '#') continue;
+
+        s_Habitacion H = {0};
+        char oculta[10] = {0};
+        char vecinas[128] = {0};
+
+        int campos = sscanf(linea, "%d|%63[^|]|%255[^|]|%29[^|]|%99[^|]|%99[^|]|%9[^|]|%127[^\n]",
+                    &H.id, H.nombre, H.descripcion, H.tipo,
+                    H.tesoro, H.enemigo, oculta, vecinas);
+
+        if(campos != 8) continue;
+        
+        if(strcmp(oculta, "N") == 0)
+        {
+            if(abb_insertar(&gs->abb,H))
+            {
+                grafo_agregar_vertice(&gs->grafo, H.id);
+
+                if(strcmp(H.tipo, "INICIO") == 0)
+                {
+                    gs->id_actual = H.id;
+                    lista_enqueue_final(&gs->visitadas, H.id);
+                }
+            }
+        }
+    }
+    rewind(f);
+
+    while(fgets(linea, sizeof(linea), f) != NULL)
+    {
+        linea[strcspn(linea, "\r\n")] = '\0';
+        if(linea[0] == '\0' || linea[0] == '#') continue;
+
+        s_Habitacion H = {0};
+        char oculta[10] = {0};
+        char vecinas[128] = {0};
+
+        int campos = sscanf(linea, "%d|%63[^|]|%255[^|]|%29[^|]|%99[^|]|%99[^|]|%9[^|]|%127[^\n]",
+                    &H.id, H.nombre, H.descripcion, H.tipo,
+                    H.tesoro, H.enemigo, oculta, vecinas);
+
+        if(campos != 8 || strcmp(oculta, "N") != 0 || strcmp(vecinas, "-") == 0)
+        {
+            continue;
+        }
+
+        char *token = strtok(vecinas, ",");
+        while (token != NULL)
+        {
+            int id_vec = atoi(token);
+
+            grafo_agregar_arista(&gs->grafo, H.id, id_vec);
+            token = strtok(NULL, ",");
+        }
+    }
+
+    fclose(f);
+    return true;
 }

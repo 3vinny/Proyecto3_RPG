@@ -1,0 +1,16 @@
+#-------HABITACIONES VISIBLES----
+5|Armeria real|Armaduras sin valor|TESORO|Escudo epico|-|N|3,7,10
+8|Biblioteca|Una biblioteca antigua|TESORO|Espada epica|-|N|2,9
+2|Pasillo de huesos|Un esqueleto deambulando|COMBATE|-|Esqueleto|N|1,6,8
+7|Plaza del pueblo|Casas abandonadas|COMBATE|Escudo epico|Duendes|N|4,5
+1|Celda|Una celda en ruinas con la puerta abierta|INICIO|-|-|N|2,3
+4|Porton de hierro|La salida que lleva al pueblo|VACIA|-|-|N|3,6,7
+3|Sala|Sala con sillones|VACIA|-|-|N|1,4,5
+6|Herreria|El antiguo herrero esta enojado|COMBATE|-|Herrero enojado|N|2,4
+10|Guarida del ciclope gigante y maton|Un ciclope durmiendo|COMBATE|Ojo del ciclope|Ciclope|N|5,9
+9|Trono del rey|El rey esta desaparecido|TESORO|Corona del rey|-|N|8,10
+#------HABITACIONES SECRETAS-----
+97|Boveda del rey|La boveda donde guarda el oro el rey|SECRETA|Cofre de oro|-|S|9
+98|Santuario|Un bonito santuario|SECRETA|Bolsa de espiritus|Fantasma real|S|2
+99|Cementerio|Un cementerio antiguo|SECRETA|-|Caballero zombi|S|4
+

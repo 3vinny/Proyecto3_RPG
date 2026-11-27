@@ -12,13 +12,12 @@ int main(void)
     juego_inicializar(&gs);
     gs.ejecutando = true;
 
-    gs.abb = NULL;
+   if(!cargar_mazmorra(&gs, "mazmorra.txt"))
+   {
+        juego_destruir(&gs);
+        return 1;
+   }
 
-   //habitacion de prueba para probar el main :V
-   s_Habitacion inicio = {1,"celda","celda con la puerta rota","INICIO","-","-"};
-
-   abb_insertar(&gs.abb, inicio);
-   gs.id_actual = 1;
 
     while(gs.ejecutando)
     {
@@ -44,6 +43,12 @@ int main(void)
             abb_inorder(gs.abb);
             sleep(1);
             break;
+        case 10:
+            system("clear");
+            printf("Habitaciones visitadas: ");
+            lista_imprimir(&gs.visitadas);
+            sleep(1);
+            break;
         case 11:
             gs.ejecutando = false;
             printf("chau\n");
@@ -54,6 +59,6 @@ int main(void)
             break;
         }
     }
-
+    juego_destruir(&gs);
     return 0;
 }
